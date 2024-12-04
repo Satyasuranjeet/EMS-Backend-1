@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: spring-boot-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_DATA_MONGODB_URI
+        value: mongodb+srv://<username>:<password>@<cluster-url>/<database-name>
+    buildCommand: ""
+    startCommand: ""
+    autoDeploy: true
