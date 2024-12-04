@@ -1,25 +1,26 @@
-# Use a base image with Java and Maven pre-installed
-FROM maven:3.8.6-openjdk-17 AS build
+# Use a stable Maven base image with OpenJDK 17 for the build
+FROM maven:3.8.8-openjdk-17 AS build
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the project files to the working directory
-COPY . .
+# Copy the Maven project files to the container
+COPY pom.xml .
+COPY src ./src
 
-# Build the application using Maven
+# Build the project using Maven
 RUN mvn clean package -DskipTests
 
-# Use a minimal image for running the application
+# Use a lightweight Java runtime image for running the application
 FROM openjdk:17-jdk-slim
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR file from the build stage
-COPY --from=build /app/target/Api-0.0.1-SNAPSHOT.jar app.jar
+# Copy the built JAR file from the previous stage
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port that the app runs on
+# Expose the application port
 EXPOSE 8080
 
 # Command to run the application
